@@ -2,7 +2,12 @@
 
 LED Strip controller
 
-## Work in progress
-[/] ColorPicker
-[ ] Navigation
-[ ] Bluetooth
+## Done
+ * Nada
+
+## WIP
+ * [ ] ColorPicker
+
+## Todo
+ * [ ] Navigation
+ * [ ] Bluetooth
