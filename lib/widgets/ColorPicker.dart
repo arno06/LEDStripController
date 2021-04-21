@@ -17,7 +17,7 @@ class ColorPicker extends StatefulWidget
 
   @override
   _ColorPickerState createState() {
-    return _ColorPickerState(width:this.width, height:this.height, wheelColor:this.color, onColorChanged:this.onColorChanged);
+    return _ColorPickerState(width:this.width, height:this.height, defaultColor:this.color, onColorChanged:this.onColorChanged);
   }
 }
 
@@ -49,14 +49,14 @@ class ColorWheelPainter extends CustomPainter
   void paintPicker(Canvas canvas, Size size){
     var paint = new Paint()
       ..shader = ui.Gradient.linear(Offset(0.0, 0.0), Offset(size.width, 0.0), [
-        Colors.redAccent,
-        Colors.pinkAccent,
-        Colors.blueAccent,
-        Colors.lightBlueAccent,
-        Colors.lightGreenAccent,
-        Colors.yellow,
-        Colors.orangeAccent,
-        Colors.redAccent,
+        cUtils.fromHSL(0, 1.0, 0.5),
+        cUtils.fromHSL(0.125, 1.0, 0.5),
+        cUtils.fromHSL(0.25, 1.0, 0.5),
+        cUtils.fromHSL(0.375, 1.0, 0.5),
+        cUtils.fromHSL(0.5, 1.0, 0.5),
+        cUtils.fromHSL(0.625, 1.0, 0.5),
+        cUtils.fromHSL(0.75, 1.0, 0.5),
+        cUtils.fromHSL(0.875, 1.0, 0.5),
       ], [.125, .25, .375, .5, .625, .75, .875, 1.0]);
     canvas.drawRect(Rect.fromPoints(Offset(0.0,0.0), Offset(size.width, size.height)), paint);
   }
@@ -133,16 +133,24 @@ class _ColorPickerState extends State<ColorPicker>
 {
   double width;
   double height;
-  Color wheelColor;
   void Function(Color) onColorChanged;
   Color pickerColor = Colors.white;
+  Color wheelColor;
+  Color defaultColor;
   Offset wheelPosition = Offset(0.0, 0.0);
   Offset pickerPosition = Offset(0.0, 0.0);
 
   static Img.Image wheelPainterImg;
   static Img.Image pickerPainterImg;
 
-  _ColorPickerState({this.width, this.height, this.wheelColor, this.onColorChanged});
+  _ColorPickerState({this.width, this.height, this.defaultColor, this.onColorChanged}){
+    final hsl = cUtils.fromColor(this.defaultColor);
+    this.pickerColor = this.defaultColor;
+    this.wheelColor = cUtils.fromHSL(hsl.h, 1.0, 0.5);
+    pickerPosition = Offset(this.width * hsl.s, this.height * (1-(hsl.l/0.5)));
+    wheelPosition = Offset(this.width * hsl.h, 0.0);
+    final c = cUtils.fromHSL(hsl.h, hsl.s, hsl.l);
+  }
 
   @override
   Widget build(BuildContext context) {
